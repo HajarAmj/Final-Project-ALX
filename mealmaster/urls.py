@@ -7,6 +7,7 @@ from rest_framework import routers
 from recipes.views import RecipeViewSet, IngredientViewSet
 from mealplans.views import MealPlanViewSet
 from shopping.views import ShoppingListViewSet
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 router = routers.DefaultRouter()
 router.register(r'api/recipes', RecipeViewSet, basename='recipes')
@@ -16,9 +17,13 @@ router.register(r'api/shopping-lists', ShoppingListViewSet, basename='shoppingli
 # router.register(r'ingredients', IngredientViewSet)  # comment out until defined
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include(router.urls)),
-    path('api/auth/', include('accounts.urls')),
+     path("admin/", admin.site.urls),
+    path("api/accounts/", include("accounts.urls")),
+    path("api/recipes/", include("recipes.urls")),
+    path("api/mealplans/", include("mealplans.urls")),
+    path("api/shopping/", include("shopping.urls")),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
 ]
 
 if settings.DEBUG:
