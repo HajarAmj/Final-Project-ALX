@@ -15,12 +15,12 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     recipe_ingredients = RecipeIngredientSerializer(many=True, read_only=True)
-    owner = serializers.ReadOnlyField(source='owner.username')
+    user = serializers.ReadOnlyField(source='user.username')
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False, allow_null=True)
 
     class Meta:
         model = Recipe
-        fields = ('id','title','description','category','image','owner','recipe_ingredients','created_at','updated_at')
+        fields = ('id','title','description','category','image','user','ingredients','created_at','updated_at')
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:

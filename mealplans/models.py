@@ -3,14 +3,16 @@ from django.conf import settings
 from recipes.models import Recipe
 
 class MealPlan(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='mealplans')
-    name = models.CharField(max_length=200, default='My Meal Plan')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='mealplans')
+    title = models.CharField(max_length=200, default='My Meal Plan')
     start_date = models.DateField()
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(blank=True, null=True)
+    recipes = models.ManyToManyField(Recipe, related_name="mealplans")
 
     def __str__(self):
-        return f"{self.name} ({self.owner})"
+        return f"{self.title} ({self.user.username})"
 
 class MealPlanAssignment(models.Model):
     plan = models.ForeignKey(MealPlan, related_name='assignments', on_delete=models.CASCADE)

@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from .models import MealPlan, MealPlanAssignment
 from recipes.serializers import RecipeSerializer
+from recipes.models import Recipe
 
 class MealPlanAssignmentSerializer(serializers.ModelSerializer):
-    recipe = serializers.PrimaryKeyRelatedField(queryset=None)
+    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
 
     class Meta:
         model = MealPlanAssignment
@@ -12,11 +13,16 @@ class MealPlanAssignmentSerializer(serializers.ModelSerializer):
 
 class MealPlanSerializer(serializers.ModelSerializer):
     assignments = serializers.SerializerMethodField()
-
+    user = serializers.ReadOnlyField(source="user.username")
+    recipes = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Recipe.objects.all()
+    )
+    recipe_details = RecipeSerializer(source="recipes", many=True, read_only=True)
+   
     class Meta:
         model = MealPlan
-        fields = ('id','owner','name','start_date','end_date','created_at','assignments')
-        read_only_fields = ('owner','created_at')
+        fields = ('id','user','title','start_date','end_date','created_at','assignments','description','recipes','recipes_details' )
+        read_only_fields = ('user','created_at')
 
     def get_assignments(self, obj):
         return MealPlanAssignmentSerializer(obj.assignments.all(), many=True).data
@@ -24,4 +30,4 @@ class MealPlanSerializer(serializers.ModelSerializer):
 class MealPlanCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealPlan
-        fields = ('id','name','start_date','end_date')
+        fields = ('id','title','start_date','end_date')

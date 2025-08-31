@@ -10,9 +10,10 @@ from recipes.models import RecipeIngredient
 class MealPlanViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = MealPlan.objects.all()
+    serializer_class = MealPlanSerializer
 
     def get_queryset(self):
-        return MealPlan.objects.filter(owner=self.request.user)
+        return MealPlan.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action in ('create','update','partial_update'):
@@ -20,7 +21,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
         return MealPlanSerializer
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(user=self.request.user)
 
     @action(detail=True, methods=['post'])
     def add_assignment(self, request, pk=None):
@@ -48,7 +49,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
             for ri in recipe.recipe_ingredients.all():
                 key = (ri.ingredient.name, ri.unit)
                 agg[key] = agg.get(key, 0) + (ri.quantity or 0)
-        sl = ShoppingList.objects.create(owner=request.user, name=f"Shopping for {plan.name}")
+        sl = ShoppingList.objects.create(user=request.user, name=f"Shopping for {plan.name}")
         for (ing_name, unit), qty in agg.items():
             ShoppingListItem.objects.create(shopping_list=sl, ingredient_name=ing_name, quantity=qty, unit=unit)
         return Response({'shopping_list_id': sl.id}, status=201)

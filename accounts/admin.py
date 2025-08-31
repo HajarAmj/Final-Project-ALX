@@ -1,8 +1,10 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
+from .models import CustomUser
 from django.contrib.auth.admin import UserAdmin
-from .models import Profile
 
-User = get_user_model()
-admin.site.register(User, UserAdmin)
-admin.site.register(Profile)
+
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ["username", "email", "date_of_birth", "is_staff"]
+
+admin.site.register(CustomUser, CustomUserAdmin)

@@ -10,7 +10,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer    
 
     def get_queryset(self):
-        return Recipe.objects.filter(owner=self.request.user)
+        return Recipe.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action in ('create','update','partial_update'):
@@ -18,7 +18,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeSerializer
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(user=self.request.user)
 
     @action(detail=True, methods=['post'])
     def image(self, request, pk=None):

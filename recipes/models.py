@@ -8,13 +8,15 @@ class Category(models.Model):
         return self.name
 
 class Recipe(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='recipes')
+    user = models.ForeignKey( settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="recipes")
     title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
     image = models.ImageField(upload_to='recipes/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    ingredients = models.TextField(help_text="List of ingredients, separated by commas")
+    instructions = models.TextField()
 
     def __str__(self):
         return self.title

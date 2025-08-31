@@ -8,7 +8,7 @@ class ShoppingListViewSet(viewsets.ModelViewSet):
     serializer_class = ShoppingListSerializer
 
     def get_queryset(self):
-        return ShoppingList.objects.filter(owner=self.request.user)
+        return ShoppingList.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(user=self.request.user)
