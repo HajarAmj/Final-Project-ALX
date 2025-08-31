@@ -15,7 +15,7 @@ class ShoppingList(models.Model):
         return f"{self.name} ({self.user})"
 
 class ShoppingListItem(models.Model):
-    shopping_list = models.ForeignKey(ShoppingList, related_name='items', on_delete=models.CASCADE)
+    shopping_list = models.ForeignKey(ShoppingList, related_name='shopping_items', on_delete=models.CASCADE)
     ingredient_name = models.CharField(max_length=200)
     quantity = models.FloatField(null=True, blank=True)
     unit = models.CharField(max_length=40, blank=True)
